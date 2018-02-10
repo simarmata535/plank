@@ -43,11 +43,11 @@ namespace Docky
 			// shared by all text
 			layout = new Pango.Layout (Gdk.pango_context_get ());
 			var font_description = new Gtk.Style ().font_desc;
-			font_description.set_weight (Pango.Weight.BOLD);
+			font_description.set_weight (Pango.Weight.NORMAL);
 			layout.set_font_description (font_description);
 			layout.set_ellipsize (Pango.EllipsizeMode.NONE);
 
-			Icon = "calendar";
+			Icon = "office-calendar";
 			Text = "date";
 
 			unowned CalendarPreferences prefs = (CalendarPreferences) Prefs;
@@ -141,8 +141,8 @@ namespace Docky
 				cr.move_to (timeXOffset, timeYOffset);
 
 				Pango.cairo_layout_path (cr, layout);
-				cr.set_line_width (0);
-				cr.set_source_rgba (0.2, 0.2, 0.2, 1);
+				cr.set_line_width (0.1);
+				cr.set_source_rgba (0.2, 0.2, 1, 0);
 				cr.stroke_preserve ();
 				cr.set_source_rgba (0, 0, 0, 0.7);
 				cr.fill ();
@@ -154,10 +154,10 @@ namespace Docky
 				cr.move_to ((surface.Width - ink_rect.width) * 5 / 11, surface.Height - daySize - dateSize - spacing / 2);
 
 				Pango.cairo_layout_path (cr, layout);
-				cr.set_line_width (0.3);
-				cr.set_source_rgba (0, 0, 0, 0.1);
+				cr.set_line_width (0);
+				cr.set_source_rgba (1, 1, 1, 1);
 				cr.stroke_preserve ();
-				cr.set_source_rgba (0, 0, 0, 0.7);
+				cr.set_source_rgba (0, 0, 0, 0.6);
 				cr.fill ();
 
 				// draw the month and year, outlined
@@ -176,7 +176,7 @@ namespace Docky
 				// useful sizes
 				daySize = surface.Height / 9;
 				dateSize = (daySize * 8) / 2  ;
-				ampmSize = daySize * 3 / 4;
+				ampmSize = daySize;
 				spacing = daySize * 3 / 4;
 				// draw the day, outlined
 				layout.get_font_description ().set_absolute_size ((int) (daySize * Pango.SCALE));
@@ -199,7 +199,7 @@ namespace Docky
 				layout.get_font_description ().set_absolute_size ((int) (dateSize * Pango.SCALE));
 				layout.set_text (now.format ("%d"), -1);
 				layout.get_pixel_extents (out ink_rect, out logical_rect);
-				cr.move_to ((surface.Width - ink_rect.width) * 5 / 11, (surface.Height / 2) - (dateSize / 2));
+				cr.move_to ((surface.Width - ink_rect.width) * 5 / 11, (surface.Height / 2) - (dateSize / 2) - (spacing / 2));
 
 				Pango.cairo_layout_path (cr, layout);
 				cr.set_line_width (0.3);
@@ -212,7 +212,7 @@ namespace Docky
 				layout.get_font_description ().set_absolute_size ((int) (ampmSize * Pango.SCALE));
 				layout.set_text (now.format ("%b"), -1);
 				layout.get_pixel_extents (out ink_rect, out logical_rect);
-				cr.move_to ((surface.Width - ink_rect.width ) * 3 / 4, dateSize * 2 - daySize - spacing);
+				cr.move_to ((surface.Width - ink_rect.width ) * 2 / 3, dateSize * 2 - daySize * 2 + spacing / 4);
 
 				Pango.cairo_layout_path (cr, layout);
 				cr.set_line_width (0.8);
