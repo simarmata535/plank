@@ -4,5 +4,6 @@ SUBDIRS = \
 	CPUMonitor \
 	Desktop \
 	Trash \
+	Calendar \
 	$(NULL)
 
