@@ -113,9 +113,9 @@ namespace Docky
 
 			// useful sizes
 			int daySize = (surface.Height * 2) / 11;
-			int dateSize = (surface.Height * 3) / 5 ;
+			int dateSize = (surface.Height * 3) / 6 ;
 			int ampmSize = daySize / 2;
-			int spacing = surface.Height / 11;
+			int spacing = surface.Height / 13;
 
 			render_file_onto_context (cr, current_theme + "/calendar-drop-shadow.svg", radius * 2);
 			render_file_onto_context (cr, current_theme + "/calendar-face-shadow.svg", radius * 2);
@@ -129,6 +129,11 @@ namespace Docky
 			int timeYOffset = daySize - spacing;
 			int timeXOffset = 0;
 
+			//day and Color
+			var dayName = now.format ("%u");
+			var rdayColor = ((dayName == "7") ? 0.5 : 0);
+			var bdayColor = ((dayName == "6") ? 0.5 : 0);
+
 			if (prefs.Elementary) {
 				// draw the day, outlined
 				layout.get_font_description ().set_absolute_size ((int) (daySize * Pango.SCALE));
@@ -136,7 +141,7 @@ namespace Docky
 				Pango.Rectangle ink_rect, logical_rect;
 				layout.get_pixel_extents (out ink_rect, out logical_rect);
 
-				timeYOffset = surface.Height / 12;
+				timeYOffset = surface.Height / 13;
 				timeXOffset = (surface.Width - ink_rect.width) / 2;
 				cr.move_to (timeXOffset, timeYOffset);
 
@@ -144,27 +149,27 @@ namespace Docky
 				cr.set_line_width (0.1);
 				cr.set_source_rgba (0.2, 0.2, 1, 0);
 				cr.stroke_preserve ();
-				cr.set_source_rgba (0, 0, 0, 0.7);
+				cr.set_source_rgba (rdayColor, 0, bdayColor, 0.7);
 				cr.fill ();
 
 				// draw the date, outlined
 				layout.get_font_description ().set_absolute_size ((int) (dateSize * Pango.SCALE));
 				layout.set_text (now.format ("%d"), -1);
 				layout.get_pixel_extents (out ink_rect, out logical_rect);
-				cr.move_to ((surface.Width - ink_rect.width) * 5 / 11, surface.Height - daySize - dateSize - spacing / 2);
+				cr.move_to ((surface.Width - ink_rect.width) * 5 / 12, timeYOffset + spacing * 2);
 
 				Pango.cairo_layout_path (cr, layout);
 				cr.set_line_width (0);
 				cr.set_source_rgba (1, 1, 1, 1);
 				cr.stroke_preserve ();
-				cr.set_source_rgba (0, 0, 0, 0.6);
+				cr.set_source_rgba (rdayColor, 0, bdayColor, 0.6);
 				cr.fill ();
 
 				// draw the month and year, outlined
 				layout.get_font_description ().set_absolute_size ((int) (ampmSize * Pango.SCALE));
 				layout.set_text (now.format ("%m / %y"), -1);
 				layout.get_pixel_extents (out ink_rect, out logical_rect);
-				cr.move_to ((surface.Width - (ink_rect.width * 6) / 4), surface.Height - ampmSize * 3 + spacing / 2);
+				cr.move_to ((surface.Width - ink_rect.width) / 2, surface.Height - ampmSize * 3 + spacing / 2);
 
 				Pango.cairo_layout_path (cr, layout);
 				cr.set_line_width (0.8);
@@ -174,17 +179,17 @@ namespace Docky
 				cr.fill ();
 			} else {
 				// useful sizes
-				daySize = surface.Height / 9;
-				dateSize = (daySize * 8) / 2  ;
-				ampmSize = daySize;
-				spacing = daySize * 3 / 4;
+				daySize = surface.Height / 10;
+				dateSize = (daySize * 4) / 1  ;
+				ampmSize = (daySize * 5) / 6;
+				spacing = (daySize * 3) / 4;
 				// draw the day, outlined
 				layout.get_font_description ().set_absolute_size ((int) (daySize * Pango.SCALE));
 				layout.set_text (now.format ("%a"), -1);
 				Pango.Rectangle ink_rect, logical_rect;
 				layout.get_pixel_extents (out ink_rect, out logical_rect);
 
-				timeYOffset = (surface.Height / 2) - (dateSize / 2) - (daySize / 2);
+				timeYOffset = spacing * 2 + daySize;
 				timeXOffset = surface.Width / 4;
 				cr.move_to (timeXOffset, timeYOffset);
 
@@ -192,27 +197,29 @@ namespace Docky
 				cr.set_line_width (0);
 				cr.set_source_rgba (0.2, 0.2, 0.2, 1);
 				cr.stroke_preserve ();
-				cr.set_source_rgba (0, 0, 0, 0.8);
+				cr.set_source_rgba (rdayColor, 0, bdayColor, 0.8);
 				cr.fill ();
 
 				// draw the date, outlined
+				timeYOffset = timeYOffset + spacing / 3;
 				layout.get_font_description ().set_absolute_size ((int) (dateSize * Pango.SCALE));
 				layout.set_text (now.format ("%d"), -1);
 				layout.get_pixel_extents (out ink_rect, out logical_rect);
-				cr.move_to ((surface.Width - ink_rect.width) * 5 / 11, (surface.Height / 2) - (dateSize / 2) - (spacing / 2));
+				cr.move_to ((surface.Width - ink_rect.width) * 5 / 11, timeYOffset);
 
 				Pango.cairo_layout_path (cr, layout);
 				cr.set_line_width (0.3);
 				cr.set_source_rgba (0, 0, 0, 0.1);
 				cr.stroke_preserve ();
-				cr.set_source_rgba (0, 0, 0, 0.7);
+				cr.set_source_rgba (rdayColor, 0, bdayColor, 0.7);
 				cr.fill ();
 
 				// draw the month and or year, outlined
+				timeYOffset = timeYOffset + dateSize + spacing;
 				layout.get_font_description ().set_absolute_size ((int) (ampmSize * Pango.SCALE));
 				layout.set_text (now.format ("%b"), -1);
 				layout.get_pixel_extents (out ink_rect, out logical_rect);
-				cr.move_to ((surface.Width - ink_rect.width ) * 2 / 3, dateSize * 2 - daySize * 2 + spacing / 4);
+				cr.move_to (surface.Width / 2 + ink_rect.width, timeYOffset);
 
 				Pango.cairo_layout_path (cr, layout);
 				cr.set_line_width (0.8);
